@@ -1,21 +1,20 @@
-const express = require("express");
-const passport = require("passport");
-const router = express.Router();
+const jwt = require("jsonwebtoken");
 
-// Initiate Google OAuth login
-router.get(
-  "/google",
-  passport.authenticate("google", { scope: ["profile", "email"] })
-);
-
-// Handle Google OAuth callback
-router.get(
-  "/google/callback",
-  passport.authenticate("google", { failureRedirect: "/login" }),
-  (req, res) => {
-    // Successful authentication
-    res.redirect("/dashboard");
+const auth = (req, res, next) => {
+  const token = req.header("Authorization")?.replace("Bearer ", "");
+  if (!token) {
+    return res
+      .status(401)
+      .json({ message: "Access denied. No token provided." });
   }
-);
 
-module.exports = router;
+  try {
+    const decoded = jwt.verify(token, process.env.JWT_SECRET);
+    req.user = decoded; // Attach user info to req.user
+    next(); // Continue to the next middleware or route handler
+  } catch (error) {
+    return res.status(400).json({ message: "Invalid token." });
+  }
+};
+
+module.exports = auth;
