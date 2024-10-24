@@ -1,22 +1,30 @@
 import React from "react";
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
-import Home from "./pages/Home";
-import Dashboard from "./pages/Dashboard";
-import GoogleAuthSuccess from "./pages/GoogleAuthSuccess";
-import Auth from "../src/components/Auth";
-import "./index.css";
+import {
+  BrowserRouter as Router,
+  Routes,
+  Route,
+  Navigate,
+} from "react-router-dom";
+import Login from "./components/Login";
+import Register from "./components/Register";
+import ForgotPassword from "./components/ForgotPassword";
+import ResetPassword from "./components/ResetPassword";
+import Dashboard from "./components/Dashboard";
 
-function App() {
+const App = () => {
   return (
     <Router>
       <Routes>
-        <Route path="/" element={<Home />} />
-        <Route path="/auth" element={<Auth />} />
+        <Route path="/" element={<Navigate to="/login" />} />{" "}
+        {/* Redirect root path to /login */}
+        <Route path="/login" element={<Login />} />
+        <Route path="/register" element={<Register />} />
+        <Route path="/forgot-password" element={<ForgotPassword />} />
+        <Route path="/reset-password/:token" element={<ResetPassword />} />
         <Route path="/dashboard" element={<Dashboard />} />
-        <Route path="/auth/success" element={<GoogleAuthSuccess />} />
       </Routes>
     </Router>
   );
-}
+};
 
 export default App;
