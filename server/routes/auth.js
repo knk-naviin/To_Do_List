@@ -1,10 +1,11 @@
 const express = require("express");
 const router = express.Router();
+const { forgotPassword } = require("../controller/userController");
+
 const {
   registerUser,
   loginUser,
   googleLogin,
-  forgotPassword,
   resetPassword,
 } = require("../controller/userController");
 const passport = require("passport");
@@ -24,9 +25,7 @@ router.get(
 router.get("/google/callback", passport.authenticate("google"), googleLogin);
 
 // Forgot Password route
-router.post("/forgotPassword", forgotPassword);
-
-// Reset Password route
+router.post("/forgot-password", forgotPassword); // Reset Password route
 router.post("/resetPassword/:token", resetPassword);
 
 module.exports = router;

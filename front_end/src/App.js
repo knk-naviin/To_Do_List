@@ -4,6 +4,7 @@ import Home from "./pages/Home";
 import Dashboard from "./pages/Dashboard";
 import GoogleAuthSuccess from "./pages/GoogleAuthSuccess";
 import Auth from "../src/components/Auth";
+import "./index.css";
 
 function App() {
   return (

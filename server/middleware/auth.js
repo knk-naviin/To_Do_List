@@ -1,15 +1,21 @@
-const jwt = require("jsonwebtoken");
+const express = require("express");
+const passport = require("passport");
+const router = express.Router();
 
-const auth = (req, res, next) => {
-  const token =
-    req.headers.authorization && req.headers.authorization.split(" ")[1];
-  if (!token) return res.status(401).json({ message: "Unauthorized" });
+// Initiate Google OAuth login
+router.get(
+  "/google",
+  passport.authenticate("google", { scope: ["profile", "email"] })
+);
 
-  jwt.verify(token, process.env.JWT_SECRET, (err, user) => {
-    if (err) return res.status(403).json({ message: "Forbidden" });
-    req.user = user;
-    next();
-  });
-};
+// Handle Google OAuth callback
+router.get(
+  "/google/callback",
+  passport.authenticate("google", { failureRedirect: "/login" }),
+  (req, res) => {
+    // Successful authentication
+    res.redirect("/dashboard");
+  }
+);
 
-module.exports = auth;
+module.exports = router;

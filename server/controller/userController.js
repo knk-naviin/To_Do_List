@@ -47,47 +47,47 @@ exports.googleLogin = async (req, res) => {
 
 // Forgot Password
 exports.forgotPassword = async (req, res) => {
-  const { email } = req.body;
-  const user = await User.findOne({ email });
-
-  if (!user) return res.status(400).json({ message: "User does not exist" });
-
-  const resetToken = crypto.randomBytes(20).toString("hex");
-
-  user.resetPasswordToken = resetToken;
-  user.resetPasswordExpire = Date.now() + 10 * 60 * 1000; // 10 minutes
-  await user.save();
-
-  const resetURL = `${req.protocol}://${req.get(
-    "host"
-  )}/api/auth/resetPassword/${resetToken}`;
-
-  const message = `You are receiving this because you (or someone else) requested to reset your password. Please go to this URL to reset it: ${resetURL}`;
+  const { email, newPassword } = req.body;
 
   try {
+    // Check if the user exists
+    const user = await User.findOne({ email });
+    if (!user) {
+      return res.status(404).json({ message: "User not found" });
+    }
+
+    // Hash the new password before saving
+    const hashedPassword = await bcrypt.hash(newPassword, 10);
+    user.password = hashedPassword;
+    await user.save();
+
+    // Send reset password email
     const transporter = nodemailer.createTransport({
-      service: "Gmail",
+      service: "gmail",
       auth: {
-        user: process.env.EMAIL_FROM,
-        pass: process.env.EMAIL_PASSWORD,
+        user: "your-email@gmail.com", // replace with your email
+        pass: "your-email-password", // replace with your email password
       },
     });
 
-    await transporter.sendMail({
-      to: user.email,
+    const mailOptions = {
+      from: "your-email@gmail.com",
+      to: email,
       subject: "Password Reset",
-      text: message,
-    });
+      text: `Hello, your password has been reset to: ${newPassword}`,
+    };
 
-    res.status(200).json({ message: "Reset password link sent" });
+    transporter.sendMail(mailOptions, (error, info) => {
+      if (error) {
+        return res.status(500).json({ message: "Error sending email" });
+      } else {
+        return res.status(200).json({ message: "Password reset email sent" });
+      }
+    });
   } catch (error) {
-    user.resetPasswordToken = undefined;
-    user.resetPasswordExpire = undefined;
-    await user.save();
-    res.status(500).json({ message: "Email could not be sent" });
+    return res.status(500).json({ message: "Server error" });
   }
 };
-
 // Reset Password
 exports.resetPassword = async (req, res) => {
   const { token } = req.params;

@@ -45,16 +45,20 @@ const Auth = () => {
   };
 
   const handleForgotPassword = async () => {
-    const userEmail = prompt("Please enter your email:");
-    if (userEmail) {
-      try {
-        await axios.post("http://localhost:8000/api/auth/forgot-password", {
-          email: userEmail,
-        });
-        alert("Password reset link sent to your email!");
-      } catch (error) {
-        alert("Error sending reset password link.");
-      }
+    try {
+      const response = await axios.post(
+        "http://localhost:8000/api/auth/forgot-password",
+        {
+          email: "knknaveen28@gmail.com",
+          newPassword: "Naveen",
+        }
+      );
+      console.log("Response:", response.data);
+    } catch (error) {
+      console.error(
+        "Error:",
+        error.response ? error.response.data : error.message
+      );
     }
   };
 
