@@ -5,6 +5,8 @@ const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 const User = require("../models/User"); // Adjust the path as necessary
 const nodemailer = require("nodemailer");
+require("../config/passport-setup"); // Import the passport configuration
+const passport = require("passport"); // Import passport for Google authentication
 
 const router = express.Router();
 
@@ -25,6 +27,24 @@ const transporter = nodemailer.createTransport({
     pass: EMAIL_PASS,
   },
 });
+
+router.get(
+  "/google",
+  passport.authenticate("google", { scope: ["profile", "email"] })
+);
+
+// Google callback route
+router.get(
+  "/google/callback",
+  passport.authenticate("google", { failureRedirect: "/login" }),
+  (req, res) => {
+    // Successful authentication, redirect to desired route with JWT
+    const token = jwt.sign({ id: req.user._id }, JWT_SECRET, {
+      expiresIn: "1h",
+    });
+    res.redirect(`/dashboard?token=${token}`); // Redirect to your dashboard or another route
+  }
+);
 
 // Register a new user
 router.post("/register", async (req, res) => {

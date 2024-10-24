@@ -3,11 +3,11 @@ const mongoose = require("mongoose");
 const userSchema = new mongoose.Schema({
   name: { type: String, required: true },
   email: { type: String, required: true, unique: true },
-  password: { type: String },
+  password: { type: String }, // This field will be optional for Google users
   phone: { type: String },
-  googleId: { type: String },
-  resetToken: String, // For password reset
-  resetTokenExpiration: Date, // Expiration for the toke
+  googleId: { type: String, unique: true }, // Unique for Google sign-in
+  resetToken: String,
+  resetTokenExpiration: Date,
 });
 
 module.exports = mongoose.model("User", userSchema);
