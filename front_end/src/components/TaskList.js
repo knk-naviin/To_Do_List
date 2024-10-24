@@ -1,25 +1,43 @@
 import React from "react";
-import PropTypes from "prop-types";
+import { Droppable, Draggable } from "react-beautiful-dnd";
 import Task from "./Task";
 
 const TaskList = ({ tasks = [], fetchTasks }) => {
   return (
-    <div className="container mx-auto p-4">
-      <h2 className="text-2xl font-bold mb-4">Task List</h2>
-      {tasks.length > 0 ? (
-        tasks.map((task) => (
-          <Task key={task._id} task={task} fetchTasks={fetchTasks} />
-        ))
-      ) : (
-        <p className="text-gray-600">No tasks available. Add some!</p>
+    <Droppable droppableId="droppable">
+      {(provided) => (
+        <div
+          ref={provided.innerRef}
+          {...provided.droppableProps}
+          className="p-2 border border-gray-300 rounded"
+        >
+          {tasks.length === 0 ? (
+            <div className="text-gray-500">No tasks available</div>
+          ) : (
+            tasks.map((task, index) => (
+              <Draggable
+                key={task.id}
+                draggableId={task.id.toString()}
+                index={index}
+              >
+                {(provided) => (
+                  <div
+                    ref={provided.innerRef}
+                    {...provided.draggableProps}
+                    {...provided.dragHandleProps}
+                    className="mb-2" // Add some margin between tasks
+                  >
+                    <Task task={task} fetchTasks={fetchTasks} />
+                  </div>
+                )}
+              </Draggable>
+            ))
+          )}
+          {provided.placeholder}
+        </div>
       )}
-    </div>
+    </Droppable>
   );
-};
-
-TaskList.propTypes = {
-  tasks: PropTypes.array,
-  fetchTasks: PropTypes.func.isRequired,
 };
 
 export default TaskList;

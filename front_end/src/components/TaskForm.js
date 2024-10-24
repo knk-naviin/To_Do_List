@@ -2,23 +2,21 @@ import React, { useState } from "react";
 import axios from "axios";
 
 const TaskForm = ({ fetchTasks }) => {
-  const [title, setTitle] = useState("");
+  const [taskTitle, setTaskTitle] = useState("");
+  const token = localStorage.getItem("authToken");
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    const token = localStorage.getItem("authToken");
-
     try {
       await axios.post(
         "http://localhost:8000/api/tasks",
-        { title },
+        { title: taskTitle, status: "todo" },
         { headers: { Authorization: `Bearer ${token}` } }
       );
-      setTitle("");
-      fetchTasks(); // Refresh the task list after creating a new task
+      setTaskTitle("");
+      fetchTasks();
     } catch (error) {
-      console.error(error);
-      alert("Error creating task");
+      console.error("Error creating task:", error);
     }
   };
 
@@ -26,15 +24,15 @@ const TaskForm = ({ fetchTasks }) => {
     <form onSubmit={handleSubmit} className="mb-4">
       <input
         type="text"
-        value={title}
-        onChange={(e) => setTitle(e.target.value)}
-        placeholder="Task Title"
-        className="border border-gray-300 rounded px-3 py-2 mb-2 w-full"
+        placeholder="New Task Title"
+        value={taskTitle}
+        onChange={(e) => setTaskTitle(e.target.value)}
         required
+        className="border border-gray-300 rounded px-3 py-2 mb-2 w-full"
       />
       <button
         type="submit"
-        className="bg-blue-500 text-white rounded px-4 py-2"
+        className="bg-green-500 text-white rounded px-4 py-2"
       >
         Add Task
       </button>

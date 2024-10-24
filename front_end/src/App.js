@@ -2,8 +2,8 @@ import React from "react";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import Home from "./pages/Home";
 import Dashboard from "./pages/Dashboard";
-import GoogleAuthSuccess from "./pages/GoogleAuthSuccess"; // Assuming GoogleAuthSuccess page
-import Auth from "./pages/Auth";
+import GoogleAuthSuccess from "./pages/GoogleAuthSuccess";
+import Auth from "../src/components/Auth";
 
 function App() {
   return (
