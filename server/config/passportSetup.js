@@ -10,31 +10,35 @@ passport.use(
       callbackURL: "/api/auth/google/callback",
     },
     async (accessToken, refreshToken, profile, done) => {
-      const existingUser = await User.findOne({ googleId: profile.id });
-      if (existingUser) {
-        return done(null, existingUser);
+      try {
+        const existingUser = await User.findOne({ googleId: profile.id });
+        if (existingUser) {
+          return done(null, existingUser);
+        }
+
+        const newUser = new User({
+          googleId: profile.id,
+          email: profile.emails[0].value,
+          name: profile.displayName,
+        });
+        const savedUser = await newUser.save();
+        done(null, savedUser);
+      } catch (error) {
+        done(error, null);
       }
-      const newUser = new User({
-        googleId: profile.id,
-        email: profile.emails[0].value,
-        name: profile.displayName,
-      });
-      await newUser.save();
-      done(null, newUser);
     }
   )
 );
 
 passport.serializeUser((user, done) => {
-  console.log("Serializing user:", user);
   done(null, user._id);
 });
 
 passport.deserializeUser(async (id, done) => {
   try {
-    const user = await User.findById(id); // Await the Promise returned by findById
-    done(null, user); // Pass user to the done function
+    const user = await User.findById(id);
+    done(null, user);
   } catch (err) {
-    done(err, null); // Pass the error if any
+    done(err, null);
   }
 });
