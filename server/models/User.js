@@ -3,8 +3,8 @@ const mongoose = require("mongoose");
 const userSchema = new mongoose.Schema({
   name: { type: String, required: true },
   email: { type: String, required: true, unique: true },
-  password: { type: String, required: true },
-  googleId: { type: String, default: null }, // Make googleId nullable
+  password: { type: String }, // Ensure this field is present
+  googleId: { type: String, unique: true },
   resetToken: String,
   resetTokenExpiration: Date,
 });
