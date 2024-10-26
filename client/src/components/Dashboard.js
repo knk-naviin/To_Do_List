@@ -1,30 +1,33 @@
 import React, { useEffect, useState } from "react";
 import TaskBoard from "./TaskBoard";
 import { useNavigate } from "react-router-dom";
-import "./dash.css";
+
 const Dashboard = () => {
   const navigate = useNavigate();
   const [isLoggedIn, setIsLoggedIn] = useState(false);
 
   useEffect(() => {
-    const storedToken = localStorage.getItem("token");
-    setIsLoggedIn(!!storedToken); // Check if token exists
-
-    // Handle automatic login from URL params (optional)
+    // Capture token from URL
     const queryParams = new URLSearchParams(window.location.search);
     const token = queryParams.get("token");
 
     if (token) {
+      // Store token in localStorage
       localStorage.setItem("token", token);
       setIsLoggedIn(true);
-      navigate("/dashboard");
+      // Optionally, clear the token from the URL
+      navigate("/dashboard", { replace: true });
+    } else {
+      // Check if token is already in localStorage
+      const storedToken = localStorage.getItem("token");
+      setIsLoggedIn(!!storedToken);
     }
   }, [navigate]);
 
   const handleLogout = () => {
     localStorage.removeItem("token");
     setIsLoggedIn(false);
-    navigate("/auth"); // Redirect to login page after logout
+    navigate("/auth");
   };
 
   return (
