@@ -2,13 +2,16 @@ const passport = require("passport");
 const GoogleStrategy = require("passport-google-oauth20").Strategy;
 const User = require("../models/User");
 
+const callbackURL =
+  "https://task-management-b8k2.onrender.com/api/auth/google/callback" ||
+  "/api/auth/google/callback";
+
 passport.use(
   new GoogleStrategy(
     {
       clientID: process.env.GOOGLE_CLIENT_ID,
       clientSecret: process.env.GOOGLE_CLIENT_SECRET,
-      callbackURL:
-        "https://a-task-management.netlify.app/api/auth/google/callback",
+      callbackURL: callbackURL,
     },
     async (accessToken, refreshToken, profile, done) => {
       try {
