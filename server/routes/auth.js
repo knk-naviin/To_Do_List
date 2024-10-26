@@ -11,12 +11,16 @@ const router = express.Router();
 
 router.post("/register", register);
 router.post("/login", login);
-router.get("/user", auth, getUser); // Ensure `auth` middleware is applied
 
 // Google OAuth routes
 router.get(
   "/google",
   passport.authenticate("google", { scope: ["profile", "email"] })
+);
+router.get(
+  "/google/callback",
+  passport.authenticate("google", { failureRedirect: "/login" }),
+  googleCallback
 );
 router.get(
   "/google/callback",
