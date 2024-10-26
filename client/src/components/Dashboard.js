@@ -15,7 +15,8 @@ const Dashboard = () => {
       // Store token in localStorage
       localStorage.setItem("token", token);
       setIsLoggedIn(true);
-      // Optionally, clear the token from the URL
+
+      // Clear the token from the URL
       navigate("/dashboard", { replace: true });
     } else {
       // Check if token is already in localStorage

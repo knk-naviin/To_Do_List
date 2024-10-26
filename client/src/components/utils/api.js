@@ -27,12 +27,12 @@
 // export const deleteTask = (id) => api.delete(`/tasks/${id}`);
 import axios from "axios";
 
-// Axios instance with base URL from environment variable
+// Create an Axios instance with a base URL from the environment variable
 const api = axios.create({
   baseURL: process.env.REACT_APP_API_URL,
 });
 
-// Interceptor to attach token to each request
+// Interceptor to automatically attach the JWT token to each request
 api.interceptors.request.use((config) => {
   const token = localStorage.getItem("token");
   if (token) {
@@ -41,26 +41,82 @@ api.interceptors.request.use((config) => {
   return config;
 });
 
-// Error handler for logging errors in one place
+// General error handler to log errors in one place
 const handleError = (error) => {
-  console.error("API call error:", error.response || error.message);
+  if (error.response) {
+    console.error(
+      "API call error:",
+      error.response.data.message || error.message
+    );
+  } else {
+    console.error("API call error:", error.message);
+  }
   throw error; // Rethrow the error to handle it in the calling function
 };
 
-// Auth APIs
-export const loginUser = (email, password) =>
-  api.post("/auth/login", { email, password }).catch(handleError);
+// Authentication API functions
+export const loginUser = async (email, password) => {
+  try {
+    const response = await api.post("/auth/login", { email, password });
+    return response.data;
+  } catch (error) {
+    handleError(error);
+  }
+};
 
-export const registerUser = (name, email, password) =>
-  api.post("/auth/register", { name, email, password }).catch(handleError);
+export const registerUser = async (name, email, password) => {
+  try {
+    const response = await api.post("/auth/register", {
+      name,
+      email,
+      password,
+    });
+    return response.data;
+  } catch (error) {
+    handleError(error);
+  }
+};
 
-// Task APIs
-export const getTasks = () => api.get("/tasks").catch(handleError);
+// Google Sign-In function for redirection to Google OAuth
+export const googleSignIn = () => {
+  window.location.href = `${process.env.REACT_APP_API_URL}/auth/google`;
+};
 
-export const createTask = (taskData) =>
-  api.post("/tasks", taskData).catch(handleError);
+// Task API functions
+export const getTasks = async () => {
+  try {
+    const response = await api.get("/tasks");
+    return response.data;
+  } catch (error) {
+    handleError(error);
+  }
+};
 
-export const updateTask = (id, updates) =>
-  api.put(`/tasks/${id}`, updates).catch(handleError);
+export const createTask = async (taskData) => {
+  try {
+    const response = await api.post("/tasks", taskData);
+    return response.data;
+  } catch (error) {
+    handleError(error);
+  }
+};
 
-export const deleteTask = (id) => api.delete(`/tasks/${id}`).catch(handleError);
+export const updateTask = async (id, updates) => {
+  try {
+    const response = await api.put(`/tasks/${id}`, updates);
+    return response.data;
+  } catch (error) {
+    handleError(error);
+  }
+};
+
+export const deleteTask = async (id) => {
+  try {
+    const response = await api.delete(`/tasks/${id}`);
+    return response.data;
+  } catch (error) {
+    handleError(error);
+  }
+};
+
+export default api;
