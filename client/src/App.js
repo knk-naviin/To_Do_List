@@ -13,8 +13,11 @@ const App = () => {
     const token = urlParams.get("token");
 
     if (token) {
+      // Store the token in localStorage
       localStorage.setItem("token", token);
-      navigate("/dashboard"); // this line Redirect to dashboard after setting token
+
+      // Navigate to the dashboard and clear URL params
+      navigate("/dashboard", { replace: true });
     }
   }, [location, navigate]);
 
@@ -23,7 +26,7 @@ const App = () => {
       <Route path="/auth" element={<AuthPage />} />
       <Route path="/dashboard" element={<Dashboard />} />
       <Route path="/login" element={<AuthPage />} />
-      <Route path="/" element={<AuthPage />} /> {/* Add this line */}
+      <Route path="/" element={<AuthPage />} />
     </Routes>
   );
 };

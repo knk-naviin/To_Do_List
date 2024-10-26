@@ -7,21 +7,11 @@ const Dashboard = () => {
   const [isLoggedIn, setIsLoggedIn] = useState(false);
 
   useEffect(() => {
-    // Capture token from URL
-    const queryParams = new URLSearchParams(window.location.search);
-    const token = queryParams.get("token");
-
+    const token = localStorage.getItem("token");
     if (token) {
-      // Store token in localStorage
-      localStorage.setItem("token", token);
       setIsLoggedIn(true);
-
-      // Clear the token from the URL
-      navigate("/dashboard", { replace: true });
     } else {
-      // Check if token is already in localStorage
-      const storedToken = localStorage.getItem("token");
-      setIsLoggedIn(!!storedToken);
+      navigate("/auth"); // Redirect to login if no token
     }
   }, [navigate]);
 
