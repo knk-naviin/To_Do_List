@@ -86,7 +86,7 @@ export const googleSignIn = () => {
 export const getTasks = async () => {
   try {
     const response = await api.get("/tasks");
-    return response.data;
+    return Array.isArray(response.data) ? response.data : [];
   } catch (error) {
     handleError(error);
   }

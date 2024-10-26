@@ -11,6 +11,7 @@ const router = express.Router();
 
 router.post("/register", register);
 router.post("/login", login);
+router.get("/user", auth, getUser); // Ensure `auth` middleware is applied
 
 // Google OAuth routes
 router.get(

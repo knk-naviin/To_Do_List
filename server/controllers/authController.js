@@ -130,3 +130,15 @@ exports.googleCallback = (req, res) => {
   console.log("Generated Token:", token); // For debugging
   res.redirect(`${process.env.FRONTEND_URL}/dashboard?token=${token}`);
 };
+const getUser = (req, res) => {
+  // `req.user` should now contain the authenticated user from the `auth` middleware
+  if (!req.user) {
+    return res.status(401).json({ message: "User not authenticated" });
+  }
+  // Send back essential user details
+  res.status(200).json({
+    _id: req.user._id,
+    name: req.user.name,
+    email: req.user.email,
+  });
+};

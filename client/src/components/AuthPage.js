@@ -104,6 +104,7 @@
 // };
 
 // export default AuthPage;
+// AuthPage.js
 import React, { useState } from "react";
 import { loginUser, registerUser } from "./utils/api";
 import { useNavigate } from "react-router-dom";
@@ -127,21 +128,14 @@ const AuthPage = () => {
         response = await registerUser(form.name, form.email, form.password);
       }
 
-      // Store token in localStorage and redirect
-      localStorage.setItem("token", response.token);
-      navigate("/dashboard");
-    } catch (error) {
-      console.error("Error in AuthPage:", error);
-      if (error.response) {
-        const { status } = error.response;
-        if (status === 400) {
-          alert("Invalid credentials or user already exists.");
-        } else {
-          alert("Server error. Please try again later.");
-        }
+      if (response.data && response.data.token) {
+        localStorage.setItem("token", response.data.token);
+        navigate("/dashboard");
       } else {
-        alert("Network error. Check your connection.");
+        throw new Error("Token not found in response data");
       }
+    } catch (error) {
+      alert(error.response?.data?.message || "Internal server error.");
     }
   };
 

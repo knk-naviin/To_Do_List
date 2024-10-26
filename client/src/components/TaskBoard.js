@@ -362,8 +362,8 @@ const TaskColumn = ({
           key={task._id}
           task={task}
           onComplete={onComplete}
-          onDelete={onDelete} // Pass onDelete prop here
-          onEdit={onEdit} // Pass onEdit prop here
+          onDelete={onDelete}
+          onEdit={onEdit}
         />
       ))}
     </div>
@@ -417,8 +417,6 @@ const TaskBoard = () => {
   };
 
   const handleEditTask = (task) => {
-    console.log("Editing task:", task); // Log task to be edited
-
     setSelectedTask(task);
     setShowTaskForm(true);
   };
