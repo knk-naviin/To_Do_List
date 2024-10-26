@@ -126,7 +126,7 @@ exports.googleAuth = (req, res) => {
 };
 
 exports.googleCallback = (req, res) => {
-  console.log("Google Callback hit, user:", req.user);
   const token = generateToken(req.user._id);
+  console.log("Generated Token:", token); // For debugging
   res.redirect(`${process.env.FRONTEND_URL}/dashboard?token=${token}`);
 };
